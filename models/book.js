@@ -1,3 +1,5 @@
+'use strict'
+
 const { Schema, model } = require("mongoose");
 
 const BookSchema = new Schema({
@@ -6,6 +8,4 @@ const BookSchema = new Schema({
   comments: [String]
 })
 
-const BookModel = model("Book", BookSchema)
-
-exports.BookModel = BookModel
+module.exports = model("Book", BookSchema)
