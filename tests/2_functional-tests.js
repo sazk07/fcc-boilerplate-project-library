@@ -6,6 +6,8 @@
 *
 */
 
+'use strict'
+
 const chaiHttp = require('chai-http');
 const chai = require('chai');
 const assert = chai.assert;
@@ -171,7 +173,7 @@ suite('Functional Tests', function() {
 
       test('Test POST /api/books/[id] with comment, id not in db', function(done){
         chai.request(server)
-        .post(`/api/books/${00000000000000000000000000}`)
+        .post(`/api/books/00000000000000000000000000`)
         .send({
           comment: "does this book exists"
         })
