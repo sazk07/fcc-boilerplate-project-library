@@ -61,7 +61,7 @@
   */
   $(function() {
     $('#commentTest').submit(function(){
-      let  id = $('#idinputtest').val();
+      let id = $('#idinputtest').val();
       $(this).attr('action', "/api/books/" + id);
     });
   });

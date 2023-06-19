@@ -12,6 +12,9 @@ const { isValidObjectId } = require('mongoose');
 const Book = require('../models/book');
 module.exports = function (app) {
 
+  let commentcount = 0
+  const comments = []
+
   app.route('/api/books')
     .get(async function (req, res){
       const books = await Book.find()
@@ -25,8 +28,8 @@ module.exports = function (app) {
       }
       const book = await Book.create({
         title,
-        comments: [],
-        commentcount: 0
+        comments,
+        commentcount
       })
       res.json({
         title: book.title,
@@ -39,10 +42,6 @@ module.exports = function (app) {
       res.json("complete delete successful")
     });
 
-
-
-  let commentcount = 0
-  const comments = []
   app.route('/api/books/:id')
     .get(async function (req, res){
       let bookid = req.params.id;
@@ -79,7 +78,7 @@ module.exports = function (app) {
       }
       const [foundBook, record] = await Promise.all([
         Book.findById(bookid),
-        Book.findByIdAndUpdate(bookid, updateObj, { upsert: true, new: true })
+        Book.findByIdAndUpdate(bookid, updateObj, { new: true })
       ])
       if (!foundBook) {
         return res.send("no book exists")
