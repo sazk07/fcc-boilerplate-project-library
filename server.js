@@ -7,7 +7,7 @@ require('dotenv').config();
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
-const console = require('zombie/lib/console.js');
+// const console = require('zombie/lib/console.js');
 const { default: mongoose } = require('mongoose');
 
 const app = express();
