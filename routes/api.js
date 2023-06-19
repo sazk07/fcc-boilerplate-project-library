@@ -9,7 +9,7 @@
 'use strict';
 
 const { isValidObjectId } = require('mongoose');
-const Book = require('../models/book')
+const Book = require('../models/book');
 module.exports = function (app) {
 
   app.route('/api/books')
@@ -41,6 +41,8 @@ module.exports = function (app) {
 
 
 
+  let commentcount = 0
+  const comments = []
   app.route('/api/books/:id')
     .get(async function (req, res){
       let bookid = req.params.id;
@@ -60,7 +62,8 @@ module.exports = function (app) {
     .post(async function(req, res){
       let bookid = req.params.id;
       let { comment } = req.body
-      const comments = [].push(comment)
+      comments.push(comment)
+      commentcount++
       // is id valid?
       const isValidId = isValidObjectId(bookid)
       if (!isValidId) {
@@ -70,10 +73,13 @@ module.exports = function (app) {
       if (!comment) {
         return res.send("missing required field comment")
       }
-      const [foundBook, commentcount, record] = await Promise.all([
+      const updateObj = {
+        comments,
+        commentcount
+      }
+      const [foundBook, record] = await Promise.all([
         Book.findById(bookid),
-        commentcount++,
-        Book.findByIdAndUpdate(bookid, { comments, commentcount })
+        Book.findByIdAndUpdate(bookid, updateObj, { upsert: true, new: true })
       ])
       if (!foundBook) {
         return res.send("no book exists")

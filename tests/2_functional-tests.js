@@ -15,6 +15,10 @@ const common = require('mocha/lib/interfaces/common');
 
 chai.use(chaiHttp);
 
+after (function () {
+  chai.request(server).get('/api')
+})
+
 suite('Functional Tests', function() {
 
   /*
@@ -140,7 +144,7 @@ suite('Functional Tests', function() {
           assert.property(res.body, "title")
           assert.equal(res.body.title, titleMarker)
           assert.property(res.body, "_id")
-          assert.property(res.body._id, idMarker)
+          assert.equal(res.body._id, idMarker)
           assert.property(res.body, "commentcount")
           assert.isNumber(res.body.commentcount)
           assert.equal(res.body.commentcount, res.body.comments.length)
@@ -152,11 +156,31 @@ suite('Functional Tests', function() {
       });
 
       test('Test POST /api/books/[id] without comment field', function(done){
-        //done();
+        chai.request(server)
+        .post(`/api/books/${idMarker}`)
+        .send({
+          id: idMarker
+        })
+        .end((err, res) => {
+          assert.equal(res.status, 200)
+          assert.isString(res.text)
+          assert.equal(res.text, "missing required field comment")
+          done()
+        })
       });
 
       test('Test POST /api/books/[id] with comment, id not in db', function(done){
-        //done();
+        chai.request(server)
+        .post(`/api/books/${00000000000000000000000000}`)
+        .send({
+          comment: "does this book exists"
+        })
+        .end((err, res) => {
+          assert.equal(res.status, 200)
+          assert.isString(res.text)
+          assert.equal(res.text, "no book exists")
+          done()
+        })
       });
 
     });
